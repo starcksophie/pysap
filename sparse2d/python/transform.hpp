@@ -52,7 +52,7 @@ public:
     py::list Transform(py::array_t<float>& arr, bool save=false);
 
     // Reconstruction method
-    py::array_t<float> Reconstruct(py::list mr_data);
+    py::array_t<float> Reconstruct(py::list mr_data, bool adj);
 
     // Getter/setter functions for the input/output image path
     void set_opath(std::string path) {this->m_opath = path;}
@@ -299,7 +299,7 @@ py::list MRTransform::Transform(py::array_t<float>& arr, bool save){
 }
 
 // Reconstruction method
-py::array_t<float> MRTransform::Reconstruct(py::list mr_data){
+py::array_t<float> MRTransform::Reconstruct(py::list mr_data, bool adj){
     // Welcome message
     if (this->verbose > 0) {
         cout << "Starting Reconstruction" << endl;
@@ -319,8 +319,19 @@ py::array_t<float> MRTransform::Reconstruct(py::list mr_data){
     }
 
     // Start the reconstruction
+    
     Ifloat data(mr.size_ima_nl(), mr.size_ima_nc(), "Reconstruct");
-    mr.recons(data);
+
+     if  (mr.Type_Transform == TO_PAVE_BSPLINE && adj)
+     {
+        Bool UseLastScale = True;
+        ATROUS_2D_WT AWT;
+        AWT.Bord = mr.Border;
+        AWT.AdjointRec=True;
+        AWT.recons(mr.tabband(), data, mr.nbr_band(), UseLastScale);
+    }
+    else
+        mr.recons(data);
 
     return image2array_2d(data);
 }

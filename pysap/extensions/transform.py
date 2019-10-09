@@ -373,7 +373,7 @@ class ISAPWaveletTransformBase(WaveletTransformBase):
 
         return analysis_data, analysis_header
 
-    def _synthesis(self, analysis_data, analysis_header):
+    def _synthesis(self, analysis_data, analysis_header, adj=False):
         """ Reconstruct a real signal from the wavelet coefficients using ISAP.
 
         Parameters
@@ -402,7 +402,7 @@ class ISAPWaveletTransformBase(WaveletTransformBase):
 
         # Use Python bindings
         else:
-            data = self.trf.reconstruct(analysis_data)
+            data = self.trf.reconstruct(analysis_data, adj)
 
         return data
 

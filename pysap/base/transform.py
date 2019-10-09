@@ -386,7 +386,7 @@ class WaveletTransformBase(with_metaclass(MetaRegister)):
             self._analysis_data, self._analysis_header = self._analysis(
                 self._data, **kwargs)
 
-    def synthesis(self):
+    def synthesis(self, adj=False):
         """ Reconstruct a real or complex signal from the wavelet coefficients
         using ISAP.
 
@@ -432,7 +432,7 @@ class WaveletTransformBase(with_metaclass(MetaRegister)):
             data = data_real + 1.j * data_imag
         else:
             data = self._synthesis(
-                self._analysis_data, self._analysis_header)
+                self._analysis_data, self._analysis_header, adj)
 
         # TODO: remove this code asap
         if self.use_wrapping:
