@@ -30,7 +30,7 @@ PYBIND11_MODULE(pysparse, module)
         py::arg("type_of_filters")=(int)(1),
         py::arg("use_l2_norm")=(bool)(false),
         py::arg("type_of_non_orthog_filters")=(int)(2),
-        py::arg("bord")=(int)(0),
+        py::arg("bord")=(int)(1),
         py::arg("nb_procs")=(int)(0),
         py::arg("verbose")=(int)(0)
       )

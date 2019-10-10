@@ -32,7 +32,7 @@ public:
         int type_of_filters=1,
         bool use_l2_norm=false,
         int type_of_non_orthog_filters=2,
-        int bord=0,
+        int bord=1,
         int nb_procs=0,
         int verbose=0);
 
@@ -95,6 +95,7 @@ MRTransform::MRTransform(
         int nb_procs,
         int verbose){
     // Define instance attributes
+
     switch (bord)
     {
       case 0: this->bord = I_ZERO; break;
@@ -263,6 +264,7 @@ py::list MRTransform::Transform(py::array_t<float>& arr, bool save){
         cout << "  Array shape: " << arr.shape(0) << ", " << arr.shape(1) << endl;
         cout << "  Save transform: " << save << endl;
     }
+
     mr.transform(data);
 
     // Correct the reconstruction error
@@ -321,8 +323,7 @@ py::array_t<float> MRTransform::Reconstruct(py::list mr_data, bool adj){
     // Start the reconstruction
     
     Ifloat data(mr.size_ima_nl(), mr.size_ima_nc(), "Reconstruct");
-
-     if  (mr.Type_Transform == TO_PAVE_BSPLINE && adj)
+     if  ((mr.Type_Transform == TO_PAVE_BSPLINE) || adj)
      {
         Bool UseLastScale = True;
         ATROUS_2D_WT AWT;
