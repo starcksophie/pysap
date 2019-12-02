@@ -141,8 +141,9 @@ PYBIND11_MODULE(pysparse, module)
       .def("deconvolve", &MRDeconvolve::Deconvolve, py::arg("arr"), py::arg("psf"));
 
       py::class_<MR2D1D>(module, "MR2D1D")
-    .def(py::init<int, bool, bool, int, int >(),
-        py::arg("type_of_transform")=(int)(14),
+    .def(py::init<int, int, bool, bool, int, int >(),
+        py::arg("type_of_transform_2d")=(int)(14), //TO_MALLAT
+        py::arg("type_of_transform_1d")=(int)(15), //TO1_MALLAT
         py::arg("normalize")=(bool)(False),
         py::arg("verbose")=(bool)(False),
         py::arg("NbrScale2d")=(int)(5),

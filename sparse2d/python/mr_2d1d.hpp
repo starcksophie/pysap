@@ -11,7 +11,12 @@
 class MR2D1D {
 
     public:
-        MR2D1D (int type_of_transform=(int)TO_MALLAT,bool normalize=false,bool verbose=false, int nb_scale_2d=5, int nb_scale_1d=4);
+        MR2D1D (int type_of_transform_2d=(int)TO_MALLAT,
+                int type_of_transform_1d=(int)TO1_MALLAT,
+                bool normalize=false,
+                bool verbose=false,
+                int nb_scale_2d=5,
+                int nb_scale_1d=4);
 
         void alloc();
         void Info();
@@ -30,7 +35,8 @@ class MR2D1D {
         int nb_scale_1d;
         int nbr_band_2d;
         int nbr_band_1d;
-        type_transform  transform;
+        type_transform  transform_2d;
+        type_trans_1d  transform_1d;
         Bool verbose;
         bool normalize=False;
 
@@ -44,7 +50,7 @@ class MR2D1D {
         FilterAnaSynt fas;
 };
 
-MR2D1D::MR2D1D (int type_of_transform,bool normalize,bool verbose, int nb_scale_2d, int nb_scale_1d)
+MR2D1D::MR2D1D (int type_of_transform_2d, int type_of_transform_1d,bool normalize,bool verbose, int nb_scale_2d, int nb_scale_1d)
 {
     nbr_band_2d = nbr_band_1d = 0;
     this->verbose = (Bool)verbose;
@@ -53,10 +59,15 @@ MR2D1D::MR2D1D (int type_of_transform,bool normalize,bool verbose, int nb_scale_
     this->nb_scale_1d = nb_scale_1d;
 
 
-    if ((type_of_transform > 0) && (type_of_transform <= NBR_TRANSFORM+1)) 
-        transform = (type_transform) (type_of_transform-1);
+    if ((type_of_transform_2d > 0) && (type_of_transform_2d <= NBR_TRANSFORM+1)) 
+        transform_2d = (type_transform) (type_of_transform_2d-1);
     else
-        throw std::invalid_argument("bad type of multiresolution transform: " + std::to_string(type_of_transform));
+        throw std::invalid_argument("bad type of multiresolution transform 2D: " + std::to_string(type_of_transform_2d));
+    
+    if ((type_of_transform_1d > 0) && (type_of_transform_1d <= NBR_TRANSFORM+1)) 
+        transform_1d = (type_trans_1d) (type_of_transform_1d-1);
+    else
+        throw std::invalid_argument("bad type of multiresolution transform 1D: " + std::to_string(type_of_transform_1d));
 
     if ((nb_scale_2d <= 1) || (nb_scale_2d > MAX_SCALE_1D)) 
         throw std::invalid_argument("bad number of scales: "+std::to_string(nb_scale_2d));
@@ -98,22 +109,22 @@ fltarray MR2D1D::get_band(int s2, int s1)
 void MR2D1D::alloc()
 {
     FilterAnaSynt *ptrfas = NULL;
-    if ((transform == TO_MALLAT) || (transform == TO_UNDECIMATED_MALLAT))
+    if ((transform_2d == TO_MALLAT) || (transform_2d == TO_UNDECIMATED_MALLAT))
     {
         fas.Verbose = verbose;
         fas.alloc(F_MALLAT_7_9); //sb_filter
         ptrfas = &fas;
     }
-    if (transform == TO_LIFTING)
+    if (transform_2d == TO_LIFTING)
         WT2D.LiftingTrans = DEF_LIFT;
     WT2D.Border = I_CONT;
     WT2D.Verbose = verbose;    
-    WT2D.alloc (Ny, Nx, nb_scale_2d, transform, ptrfas, NORM_L2, -1, DEF_UNDER_FILTER);
+    WT2D.alloc (Ny, Nx, nb_scale_2d, transform_2d, ptrfas, NORM_L2, -1, DEF_UNDER_FILTER);
     nbr_band_2d = WT2D.nbr_band();
     WT2D.ModifiedATWT = True;
 
     WT1D.U_Filter = DEF_UNDER_FILTER;
-    WT1D.alloc (Nz, TO1_MALLAT, nb_scale_1d, ptrfas, NORM_L2, False);   
+    WT1D.alloc (Nz, transform_1d, nb_scale_1d, ptrfas, NORM_L2, False);   
     nbr_band_1d = WT1D.nbr_band();
 
     TabBand = new fltarray [nbr_band_2d];
@@ -300,7 +311,8 @@ fltarray MR2D1D::write_result(int Nelem)
 
 void MR2D1D::Info()
 {
-    cout << "Transform = " << StringTransform((type_transform) transform) << endl;
+    cout << "Transform 2D= " << StringTransform((type_transform) transform_2d) << endl;
+    cout << "Transform 1D= " << StringTransform((type_transform) transform_1d) << endl;
     cout << "nb_scale_2d = " << this->nb_scale_2d<< endl;
     cout << "NbrScale1d = " << this->nb_scale_1d<< endl;
     cout << "Nx = " << Nx << " Ny = " << Ny << " Nz = " << Nz << endl;

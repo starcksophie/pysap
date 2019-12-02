@@ -146,11 +146,14 @@ class MR2D1D():
         Parameters
         ----------
 
-        type_of_multiresolution_transform: int
+        type_of_transform_2d: int 
+        type_of_transform_1d: int
         normalize: bool
         verbose: bool
-        number_of_scales_2D: int
-        number_of_scales: int
+        NbrScale2d: int
+            number of scales 2d
+        Nbr_Plan: int
+            number of scales 1d
 
         """
         self.cube = None
