@@ -12,7 +12,7 @@ class MR2D1D {
 
     public:
         MR2D1D (int type_of_transform_2d=(int)TO_MALLAT,
-                int type_of_transform_1d=(int)TO1_MALLAT,
+                int filter_1d=F_MALLAT_7_9,
                 bool normalize=false,
                 bool verbose=false,
                 int nb_scale_2d=5,
@@ -35,6 +35,7 @@ class MR2D1D {
         int nb_scale_1d;
         int nbr_band_2d;
         int nbr_band_1d;
+        type_sb_filter filter;
         type_transform  transform_2d;
         type_trans_1d  transform_1d;
         Bool verbose;
@@ -48,27 +49,29 @@ class MR2D1D {
         intarray size_band_ny;
         intarray size_band_nz;
         FilterAnaSynt fas;
+        FilterAnaSynt fas2;
 };
 
-MR2D1D::MR2D1D (int type_of_transform_2d, int type_of_transform_1d,bool normalize,bool verbose, int nb_scale_2d, int nb_scale_1d)
+MR2D1D::MR2D1D (int type_of_transform_2d, int filter_1d, bool normalize,bool verbose, int nb_scale_2d, int nb_scale_1d)
 {
     nbr_band_2d = nbr_band_1d = 0;
     this->verbose = (Bool)verbose;
     this->normalize = normalize;
     this->nb_scale_2d = nb_scale_2d;
     this->nb_scale_1d = nb_scale_1d;
+  
+    // if ((filter_1d > 0) && (filter_1d <= NBR_UNDEC_FILTER))
+    //     this->filter = type_undec_filter(filter_1d - 1);
 
+    std::stringstream strs;
+    strs << filter_1d;
+    this->filter = get_filter_bank((char *)strs.str().c_str());
 
     if ((type_of_transform_2d > 0) && (type_of_transform_2d <= NBR_TRANSFORM+1)) 
         transform_2d = (type_transform) (type_of_transform_2d-1);
     else
         throw std::invalid_argument("bad type of multiresolution transform 2D: " + std::to_string(type_of_transform_2d));
     
-    if ((type_of_transform_1d > 0) && (type_of_transform_1d <= NBR_TRANSFORM+1)) 
-        transform_1d = (type_trans_1d) (type_of_transform_1d-1);
-    else
-        throw std::invalid_argument("bad type of multiresolution transform 1D: " + std::to_string(type_of_transform_1d));
-
     if ((nb_scale_2d <= 1) || (nb_scale_2d > MAX_SCALE_1D)) 
         throw std::invalid_argument("bad number of scales: "+std::to_string(nb_scale_2d));
 
@@ -123,8 +126,13 @@ void MR2D1D::alloc()
     nbr_band_2d = WT2D.nbr_band();
     WT2D.ModifiedATWT = True;
 
+    FilterAnaSynt *ptrfas2 = NULL;
+    fas2.Verbose = verbose;
+    fas2.alloc(this->filter); //sb_filter
+    ptrfas2 = &fas2;
+
     WT1D.U_Filter = DEF_UNDER_FILTER;
-    WT1D.alloc (Nz, transform_1d, nb_scale_1d, ptrfas, NORM_L2, False);   
+    WT1D.alloc (Nz, TO1_MALLAT, nb_scale_1d, ptrfas2, NORM_L2, False);   
     nbr_band_1d = WT1D.nbr_band();
 
     TabBand = new fltarray [nbr_band_2d];
@@ -196,7 +204,7 @@ py::array_t<float> MR2D1D::Reconstruct(py::array_t<float> data)
     fltarray Tab = array2image_3d(data);
 
     int ind=2;
-    for (int s=0; s <nbr_band_2d; s++) 
+    for (int s=0; s < nbr_band_2d; s++) 
     for (int s1=0; s1 < nbr_band_1d; s1++)
     {
        int Nxb = (int) Tab(ind++);
@@ -312,7 +320,8 @@ fltarray MR2D1D::write_result(int Nelem)
 void MR2D1D::Info()
 {
     cout << "Transform 2D= " << StringTransform((type_transform) transform_2d) << endl;
-    cout << "Transform 1D= " << StringTransform((type_transform) transform_1d) << endl;
+    cout << "Transform 1D= " << StringTransf1D((type_trans_1d) transform_1d) << endl;
+    cout << "Filter 1D= "  << StringSBFilter(this->filter) << endl;
     cout << "nb_scale_2d = " << this->nb_scale_2d<< endl;
     cout << "NbrScale1d = " << this->nb_scale_1d<< endl;
     cout << "Nx = " << Nx << " Ny = " << Ny << " Nz = " << Nz << endl;

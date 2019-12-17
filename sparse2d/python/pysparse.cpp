@@ -143,12 +143,13 @@ PYBIND11_MODULE(pysparse, module)
       py::class_<MR2D1D>(module, "MR2D1D")
     .def(py::init<int, int, bool, bool, int, int >(),
         py::arg("type_of_transform_2d")=(int)(14), //TO_MALLAT
-        py::arg("type_of_transform_1d")=(int)(15), //TO1_MALLAT
+        py::arg("filter_1d")=(int)(1), //F_MALLAT_7_9
         py::arg("normalize")=(bool)(False),
         py::arg("verbose")=(bool)(False),
         py::arg("NbrScale2d")=(int)(5),
         py::arg("Nbr_Plan")=(int)(4)
       )
     .def("transform", &MR2D1D::Transform, py::arg("Name_Cube_in"))
-    .def("reconstruct", &MR2D1D::Reconstruct, py::arg("data"));
+    .def("reconstruct", &MR2D1D::Reconstruct, py::arg("data"))
+    .def("info", &MR2D1D::Info);
 }

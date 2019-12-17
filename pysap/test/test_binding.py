@@ -429,7 +429,7 @@ class TestWarpAndBinding(unittest.TestCase):
     def test_mr2d1d_output_val(self):
         data = self.mr_image.data
 
-        mr = sp.MR2D1D(type_of_transform=2)
+        mr = sp.MR2D1D(type_of_transform_2d=2)
         mr.transform(data)
 
         # use wrapper
