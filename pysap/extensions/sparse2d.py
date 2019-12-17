@@ -146,54 +146,58 @@ class MR2D1D():
         Parameters
         ----------
 
-        type_of_transform_2d: int 
-              1: linear wavelet transform: a trous algorithm 
-              2: bspline wavelet transform: a trous algorithm 
-              3: wavelet transform in Fourier space 
-              4: morphological median transform 
-              5: morphological minmax transform 
-              6: pyramidal linear wavelet transform 
-              7: pyramidal bspline wavelet transform 
-              8: pyramidal wavelet transform in Fourier space: algo 1 (diff. between two resolutions) 
-              9: Meyer's wavelets (compact support in Fourier space) 
-              10: pyramidal median transform (PMT) 
-              11: pyramidal laplacian 
-              12: morphological pyramidal minmax transform 
-              13: decomposition on scaling function 
-              14: Mallat's wavelet transform (7/9 filters) 
-              15: Feauveau's wavelet transform 
-              16: Feauveau's wavelet transform without undersampling 
-              17: Line Column Wavelet Transform (1D+1D) 
-              18: Haar's wavelet transform 
-              19: half-pyramidal transform 
-              20: mixed Half-pyramidal WT and Median method (WT-HPMT) 
-              21: undecimated diadic wavelet transform (two bands per scale) 
-              22: mixed WT and PMT method (WT-PMT) 
-              23: undecimated Haar transform: a trous algorithm (one band per scale) 
-              24: undecimated (bi-) orthogonal transform (three bands per scale) 
-              25: non orthogonal undecimated transform (three bands per scale) 
-              26: Isotropic and compact support wavelet in Fourier space 
-              27: pyramidal wavelet transform in Fourier space: algo 2 (diff. between the square of two resolutions) 
-              28: Fast Curvelet Transform 
-              29: Wavelet transform via lifting scheme 
-              30: 5/3 on line and 4/4 on column 
-              31: 4/4 on line and 5/3 on column 
+        type_of_transform_2d: int
+              1: linear wavelet transform: a trous algorithm
+              2: bspline wavelet transform: a trous algorithm
+              3: wavelet transform in Fourier space
+              4: morphological median transform
+              5: morphological minmax transform
+              6: pyramidal linear wavelet transform
+              7: pyramidal bspline wavelet transform
+              8: pyramidal wavelet transform in Fourier space:
+                    algo 1 (diff. between two resolutions)
+              9: Meyer's wavelets (compact support in Fourier space)
+              10: pyramidal median transform (PMT)
+              11: pyramidal laplacian
+              12: morphological pyramidal minmax transform
+              13: decomposition on scaling function
+              14: Mallat's wavelet transform (7/9 filters)
+              15: Feauveau's wavelet transform
+              16: Feauveau's wavelet transform without undersampling
+              17: Line Column Wavelet Transform (1D+1D)
+              18: Haar's wavelet transform
+              19: half-pyramidal transform
+              20: mixed Half-pyramidal WT and Median method (WT-HPMT)
+              21: undecimated diadic wavelet transform (two bands per scale)
+              22: mixed WT and PMT method (WT-PMT)
+              23: undecimated Haar transform:
+                    a trous algorithm(one band per scale)
+              24: undecimated (bi-) orthogonal transform
+                    (three bands per scale)
+              25: non orthogonal undecimated transform (three bands per scale)
+              26: Isotropic and compact support wavelet in Fourier space
+              27: pyramidal wavelet transform in Fourier space:
+                    algo 2 (diff. between the square of two resolutions)
+              28: Fast Curvelet Transform
+              29: Wavelet transform via lifting scheme
+              30: 5/3 on line and 4/4 on column
+              31: 4/4 on line and 5/3 on column
              default is bspline wavelet transform: a trous algorithm
         filter_1d: int
-              1: Biorthogonal 7/9 filters 
-              2: Daubechies filter 4 
-              3: Biorthogonal 2/6 Haar filters 
-              4: Biorthogonal 2/10 Haar filters 
-              5: Odegard 9/7 filters 
-              6: 5/3 filter 
-              7: Battle-Lemarie filters (2 vanishing moments) 
-              8: Battle-Lemarie filters (4 vanishing moments) 
-              9: Battle-Lemarie filters (6 vanishing moments) 
-              10: User's filters 
-              11: Haar filter 
-              12: 3/5 filter 
-              13: 4/4 Linar spline filters 
-              14: Undefined sub-band filters 
+              1: Biorthogonal 7/9 filters
+              2: Daubechies filter 4
+              3: Biorthogonal 2/6 Haar filters
+              4: Biorthogonal 2/10 Haar filters
+              5: Odegard 9/7 filters
+              6: 5/3 filter
+              7: Battle-Lemarie filters (2 vanishing moments)
+              8: Battle-Lemarie filters (4 vanishing moments)
+              9: Battle-Lemarie filters (6 vanishing moments)
+              10: User's filters
+              11: Haar filter
+              12: 3/5 filter
+              13: 4/4 Linar spline filters
+              14: Undefined sub-band filters
              default is Biorthogonal 7/9 filters
         normalize: bool
         verbose: bool
@@ -226,6 +230,6 @@ class MR2D1D():
             the input data.
         """
         self.recons = self.trf.reconstruct(data)
-    
+
     def info(self):
         self.trf.info()
